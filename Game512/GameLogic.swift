@@ -8,10 +8,32 @@ enum Direction {
     case right
 }
 
+
+protocol TileSpawner {
+    func spawn(on board: inout [[Int]])
+}
+
+struct RandomTileSpawner: TileSpawner {
+    func spawn(on board: inout [[Int]]) {
+        var empties: [(Int, Int)] = []
+        for r in 0..<4 {
+            for c in 0..<4 where board[r][c] == 0 {
+                empties.append((r, c))
+            }
+        }
+        guard let pos = empties.randomElement() else {
+            return
+        }
+
+        let value = (Int.random(in: 0..<10) == 0) ? 4 : 2
+        board[pos.0][pos.1] = value
+    }
+}
+
 final class GameLogic: ObservableObject {
     @Published private(set) var board: [[Int]] =
         Array(repeating: Array(repeating: 0, count: 4), count: 4)
-    
+
     @Published private(set) var score: Int = 0
     @Published private(set) var message: String = ""
     @Published var debugLine: [Int] = [0, 2, 0, 4]
@@ -25,7 +47,10 @@ final class GameLogic: ObservableObject {
         [2, 0, 2, 2]
     ]
 
-    init() {
+    private let spawner: TileSpawner
+
+    init(spawner: TileSpawner = RandomTileSpawner()) {
+        self.spawner = spawner
         newGame()
     }
 
@@ -34,16 +59,36 @@ final class GameLogic: ObservableObject {
         score = 0
         message = ""
         debugGained = 0
+
+        spawner.spawn(on: &board)
+        spawner.spawn(on: &board)
     }
 
     func move(_ dir: Direction) {
+        if dir != .left {
+            return
+        }
 
+        let before = board
+        var gainedTotal = 0
+
+        for r in 0..<4 {
+            let res = moveLineLeft(board[r])
+            board[r] = res.line
+            gainedTotal += res.gained
+        }
+
+        if board != before {
+            score += gainedTotal
+            spawner.spawn(on: &board)
+        }
     }
 
     func moveLineLeft(_ line: [Int]) -> (line: [Int], gained: Int) {
         var arr = line.filter {
             $0 != 0
         }
+
         var gained = 0
         var i = 0
         while i < arr.count - 1 {
@@ -60,6 +105,7 @@ final class GameLogic: ObservableObject {
         while arr.count < 4 {
             arr.append(0)
         }
+        
         return (arr, gained)
     }
 
@@ -74,4 +120,9 @@ final class GameLogic: ObservableObject {
         debugLine = res.line
         debugGained = res.gained
     }
+    
+    func setBoardForTests(_ newBoard: [[Int]]) {
+        board = newBoard
+    }
+    
 }
