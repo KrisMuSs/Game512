@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "3C9D75E2-AA1C-42A0-BAAF-26D9B888BF15",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Game512.xcodeproj",
+      "identifier" : "FAC105342F536744002A4484",
+      "name" : "Game512"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Game512.xcodeproj",
+        "identifier" : "FAC105442F536748002A4484",
+        "name" : "Game512Tests"
+      }
+    },
+    {
+      "enabled" : false,
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Game512.xcodeproj",
+        "identifier" : "FAC1054E2F536748002A4484",
+        "name" : "Game512UITests"
+      }
+    }
+  ],
+  "version" : 1
+}
