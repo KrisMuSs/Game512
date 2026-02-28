@@ -9,24 +9,31 @@ enum Direction {
 }
 
 final class GameLogic: ObservableObject {
+    @Published private(set) var board: [[Int]] =
+        Array(repeating: Array(repeating: 0, count: 4), count: 4)
+    
     @Published private(set) var score: Int = 0
     @Published private(set) var message: String = ""
-    @Published var debugLine: [Int] = [0, 2, 0, 2]
+    @Published var debugLine: [Int] = [0, 2, 0, 4]
     @Published private(set) var debugGained: Int = 0
 
     private var debugIndex: Int = 0
     private let debugPresets: [[Int]] = [
-        [0, 2, 0, 2],
+        [0, 2, 0, 4],
         [2, 2, 0, 0],
         [2, 2, 2, 0],
         [2, 0, 2, 2]
     ]
 
-    init() {}
+    init() {
+        newGame()
+    }
 
     func newGame() {
+        board = Array(repeating: Array(repeating: 0, count: 4), count: 4)
         score = 0
         message = ""
+        debugGained = 0
     }
 
     func move(_ dir: Direction) {
@@ -34,8 +41,9 @@ final class GameLogic: ObservableObject {
     }
 
     func moveLineLeft(_ line: [Int]) -> (line: [Int], gained: Int) {
-        var arr = line.filter { $0 != 0 }
-
+        var arr = line.filter {
+            $0 != 0
+        }
         var gained = 0
         var i = 0
         while i < arr.count - 1 {
@@ -52,7 +60,6 @@ final class GameLogic: ObservableObject {
         while arr.count < 4 {
             arr.append(0)
         }
-        
         return (arr, gained)
     }
 

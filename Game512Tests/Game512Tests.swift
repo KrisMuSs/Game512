@@ -27,3 +27,5 @@ final class GameLogicTests: XCTestCase {
         XCTAssertEqual(res.gained, 4, "Должно быть только одно слияние и +4 очка")
     }
 }
+
+
