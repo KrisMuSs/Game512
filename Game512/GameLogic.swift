@@ -101,8 +101,24 @@ final class GameLogic: ObservableObject {
             }
 
         case .down:
+            for c in 0..<4 {
+                let colReversed = Array((0..<4).map {
+                    board[$0][c]
+                }
+                    .reversed())
+                let res = moveLineLeft(colReversed)
+                
+                let out = Array(
+                    res.line
+                    .reversed()
+                )
+                
+                for r in 0..<4 {
+                    board[r][c] = out[r]
+                }
+                gainedTotal += res.gained
+            }
 
-            return
         }
 
         if board != before {
