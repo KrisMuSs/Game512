@@ -294,4 +294,25 @@ final class GameLogicWinTests: XCTestCase {
     }
 }
 
+final class GameLogicGameLoseTests: XCTestCase {
 
+    private final class NoSpawn: TileSpawner {
+        func spawn(on board: inout [[Int]]) {
+        }
+    }
+
+    func test_gameloseMessage() {
+        let sut = GameLogic(spawner: NoSpawn())
+
+        sut.setBoardForTests([
+            [2, 4, 2, 4],
+            [4, 2, 4, 2],
+            [2, 4, 2, 4],
+            [4, 2, 4, 2]
+        ])
+
+        sut.move(.left)
+
+        XCTAssertEqual(sut.message, "Ты проиграл!", "Если ходов нет, должно быть сообщение Ты проиграл")
+    }
+}

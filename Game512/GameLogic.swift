@@ -144,13 +144,38 @@ final class GameLogic: ObservableObject {
     }
 
     private func updateMessage() {
-        if board.flatMap({ $0 })
-            .contains(target)
-        {
+        if board.flatMap({ $0 }).contains(target) {
             message = winText
             return
         }
+        
+        if hasMoves() == false {
+            message = overText
+            return
+        }
         message = ""
+    }
+    
+    private func hasMoves() -> Bool {
+        if board.flatMap({ $0 }).contains(0)
+        {
+            return true
+        }
+
+        for r in 0..<4 {
+            for c in 0..<4 {
+                let v = board[r][c]
+                if c + 1 < 4, board[r][c + 1] == v {
+                    return true
+                }
+                
+                if r + 1 < 4, board[r + 1][c] == v {
+                    return true
+                }
+                
+            }
+        }
+        return false
     }
     
     func moveLineLeft(_ line: [Int]) -> (line: [Int], gained: Int) {
