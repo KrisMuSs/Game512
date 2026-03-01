@@ -38,7 +38,14 @@ final class GameLogic: ObservableObject {
     @Published private(set) var message: String = ""
     @Published var debugLine: [Int] = [0, 2, 0, 4]
     @Published private(set) var debugGained: Int = 0
+    
+    let target = 512
+    private let winText = "Ты победил! (512)"
+    private let overText = "Ты проиграл!"
 
+    private var isFinished: Bool {
+        message == winText || message == overText
+    }
     private var debugIndex: Int = 0
     private let debugPresets: [[Int]] = [
         [0, 2, 0, 4],
@@ -62,9 +69,15 @@ final class GameLogic: ObservableObject {
 
         spawner.spawn(on: &board)
         spawner.spawn(on: &board)
+        
+        updateMessage()
     }
 
     func move(_ dir: Direction) {
+        if isFinished {
+            return
+        }
+        
         let before = board
         var gainedTotal = 0
 
@@ -125,8 +138,21 @@ final class GameLogic: ObservableObject {
             score += gainedTotal
             spawner.spawn(on: &board)
         }
+        
+        updateMessage()
+        
     }
 
+    private func updateMessage() {
+        if board.flatMap({ $0 })
+            .contains(target)
+        {
+            message = winText
+            return
+        }
+        message = ""
+    }
+    
     func moveLineLeft(_ line: [Int]) -> (line: [Int], gained: Int) {
         var arr = line.filter {
             $0 != 0

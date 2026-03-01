@@ -269,3 +269,29 @@ final class GameLogicMoveDownTests: XCTestCase {
         XCTAssertEqual(spawner.calls, 0, "Если ход ничего не меняет, спавна быть не должно")
     }
 }
+
+
+final class GameLogicWinTests: XCTestCase {
+
+    private final class NoSpawn: TileSpawner {
+        func spawn(on board: inout [[Int]]) {
+        }
+    }
+
+    func test_winMessage() {
+        let sut = GameLogic(spawner: NoSpawn())
+
+        sut.setBoardForTests([
+            [512, 0, 0, 0],
+            [0,   0, 0, 0],
+            [0,   0, 0, 0],
+            [0,   0, 0, 0]
+        ])
+
+        sut.move(.left)
+
+        XCTAssertEqual(sut.message, "Ты победил! (512)", "Если на доске есть 512, должно быть сообщение о победе")
+    }
+}
+
+
