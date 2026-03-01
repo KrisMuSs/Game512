@@ -65,17 +65,29 @@ final class GameLogic: ObservableObject {
     }
 
     func move(_ dir: Direction) {
-        if dir != .left {
-            return
-        }
+        if dir != .left && dir != .right { return }
 
         let before = board
         var gainedTotal = 0
 
-        for r in 0..<4 {
-            let res = moveLineLeft(board[r])
-            board[r] = res.line
-            gainedTotal += res.gained
+        switch dir {
+        case .left:
+            for r in 0..<4 {
+                let res = moveLineLeft(board[r])
+                board[r] = res.line
+                gainedTotal += res.gained
+            }
+
+        case .right:
+            for r in 0..<4 {
+                let reversed = Array(board[r].reversed())
+                let res = moveLineLeft(reversed)
+                board[r] = Array(res.line.reversed())
+                gainedTotal += res.gained
+            }
+
+        default:
+            break
         }
 
         if board != before {
@@ -126,3 +138,4 @@ final class GameLogic: ObservableObject {
     }
     
 }
+
